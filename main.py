@@ -40,6 +40,7 @@ fragment_shader = load_shader("shaders/fragment_shader.glsl")
 
 program = ctx.program(vertex_shader=vertex_shader, fragment_shader=fragment_shader)
 
+# Mapping the uv to xy coords: in this the formatting broke idk why?
 quad_data = np.array(
     [
         # x,    y,    u,   v
