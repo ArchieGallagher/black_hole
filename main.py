@@ -17,7 +17,7 @@ glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
 glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)
 glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
 
-width, height = 800, 600
+width, height = 640, 480
 window = glfw.create_window(width, height, "Black Hole Sim", None, None)
 if not window:
     glfw.terminate()
