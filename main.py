@@ -8,6 +8,7 @@ import time
 initial_time = time.perf_counter()
 frame = 0.0
 
+frames_per_second = 0.0
 
 # Window
 if not glfw.init():
@@ -35,8 +36,8 @@ def load_shader(path):
         return f.read()
 
 
-vertex_shader = load_shader("shaders/vertex_shader.glsl")
-fragment_shader = load_shader("shaders/fragment_shader.glsl")
+vertex_shader = load_shader("shaderFiles/vertex_shader.glsl")
+fragment_shader = load_shader("shaderFiles/fragment_shader.glsl")
 
 program = ctx.program(vertex_shader=vertex_shader, fragment_shader=fragment_shader)
 
@@ -78,7 +79,7 @@ while not glfw.window_should_close(window):
     if time_elapsed >= 1.0:
         frames_per_second = frame / time_elapsed
     frame += 1.0
-    window = glfw.set_window_title(window, f"Black Hole - {frames_per_second}")
+    glfw.set_window_title(window, f"Black Hole - {frames_per_second:.3f}")
     ctx.clear(0.0, 0.0, 0.0)
 
     # Update any per-frame uniforms here, e.g.:
