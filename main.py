@@ -84,7 +84,7 @@ while not glfw.window_should_close(window):
 
     # Update any per-frame uniforms here, e.g.:
     # program['time'].value = glfw.get_time()
-
+    program['resolution'].value = (width, height)
     vao.render(moderngl.TRIANGLE_STRIP)
 
     glfw.swap_buffers(window)
