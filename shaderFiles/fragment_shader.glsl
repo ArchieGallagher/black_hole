@@ -71,5 +71,5 @@ void rk4(inout vec3 ray_position, inout vec3 ray_direction, float dt, float h2){
   ray_position += (dt / 6.) * (position_k1 + 2. * position_k2 + 2. * position_k3 + position_k4);
   ray_direction += (dt / 6.) * (direction_k1 + 2. * direction_k2 + 2. * direction_k3 + direction_k4);
 
-  ray_direction = normalize(ray_direction)//Ughh, American Spelling can't believe they haven't worked in a British English into this language yet but okay.
+  ray_direction = normalize(ray_direction);//Ughh, American Spelling can't believe they haven't worked in a British English into this language yet but okay.
 }
