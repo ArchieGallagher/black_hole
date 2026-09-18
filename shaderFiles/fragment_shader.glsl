@@ -16,7 +16,7 @@ Image(meaning that this is not the camera but part of the generation of the pers
 Camera(Origin of the rays of light, in order to generate a perspective view the camera will be "fairly" close behind the Image.)
 
 
-The black hole classification I'm basing this off of is an Intermediate-mass black hole. - Info from wikipedia
+The black hole classification I'm basing this off of an Intermediate-mass black hole. - Info from wikipedia
 mass = 10^5
 radius = 10^6 metres   ---> This equates to a radius of a singular unit(arbitrary)
 
@@ -28,14 +28,38 @@ All of the data on the accretion disk is just arbitrary and "made up" by me.
 
 
 void main(){
-
+  /*
+  In here we are going to need to setup converting the uv coords into the pixels that they represent.
+  Then work out the ray_position + ray_direction at the initial point seesntially on the image view window.
+  Then plug that into the start_position + start_direction into the ray_march function.
+  */
 }
 
-/*
-The Ray March function is so the 
-*/
-void ray_march(){
+void ray_march(vec3 start_position, vec3 start_direction){
+  vec3 ray_position = start_position;
+  vec3 ray_direction = normalize(start_direction);
 
+  /*
+  The explaination for the h2 assignment below is;
+  The dot product is being used to square the magnitude of the vector.
+  The cross product is to produce a vector perpendicular to both inputs.
+  */
+  float h2 = dot(cross(ray_position, ray_direction), cross(ray_position, ray_direction));
+
+  for (int i = 0; i < MAX_STEPS; i++){
+    float r = length(ray_position);
+
+    /*
+    This where i will put the checks to see if the ray either;
+    Fell into the black hole,
+    Hit the accretion disk,
+    Missed it entirely.
+    */
+
+    float dt = getStepSize(r);
+    rk4(position, direction, dt, h2);
+  }
+  return vec3(.0);
 }
 
 void acceleration_func(in vec3 ray_position, out vec3 ray_acceleration, float h2){ // The inputted variables should be in the format of an array.
@@ -45,9 +69,12 @@ void acceleration_func(in vec3 ray_position, out vec3 ray_acceleration, float h2
 }
 
 void rk4(inout vec3 ray_position, inout vec3 ray_direction, float dt, float h2){ // This function is to increase the accuracy of the simulation.
+  float r = length(ray_position);
+
   //k1
   vec3 position_k1 = ray_direction;
-  vec3 direction_k1 = acceleration_func(ray_position, h2);
+  vec3 direction_k1;
+  acceleration_func(ray_position, direction_k1, h2);
   //k2
   vec3 k2_position = ray_position + position_k1 * (dt * .5);
   vec3 k2_direction = ray_direction + direction_k1 * (dt * .5);
