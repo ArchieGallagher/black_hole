@@ -2,6 +2,39 @@ import glfw
 import moderngl
 import numpy as np
 
+# Moving the camera in the scene
+import math
+
+yaw = 0.0
+pitch = math.radians(10.0)
+distance = 70.0
+dragging = False
+last_x = last_y = 0.0
+sensitivity = 0.005
+
+
+def mouse_button_cb(window, button, action, mods):
+    global dragging, last_x, last_y
+    if button == glfw.MOUSE_BUTTON_LEFT:
+        dragging = action == glfw.PRESS
+        last_x, last_y = glfw.get_cursor_pos(window)
+
+
+def cursor_pos_cb(window, x, y):
+    global yaw, pitch, last_x, last_y
+    if dragging:
+        yaw -= (x - last_x) * sensitivity
+        pitch += (y - last_y) * sensitivity
+        limit = math.radians(89.0)
+        pitch = max(-limit, min(limit, pitch))  # avoid flipping at the poles
+    last_x, last_y = x, y
+
+
+def scroll_cb(window, xoff, yoff):
+    global distance
+    distance = max(10.0, min(200.0, distance - yoff * 3.0))
+
+
 # This part is to help with making an FPS_calculator
 import time
 
@@ -68,6 +101,9 @@ quad_data = np.array(
 vbo = ctx.buffer(quad_data.tobytes())
 vao = ctx.vertex_array(program, [(vbo, "2f 2f", "in_position", "in_uv")])
 
+glfw.set_mouse_button_callback(window, mouse_button_cb)
+glfw.set_cursor_pos_callback(window, cursor_pos_cb)
+glfw.set_scroll_callback(window, scroll_cb)
 
 # Render loop
 while not glfw.window_should_close(window):
@@ -84,7 +120,11 @@ while not glfw.window_should_close(window):
 
     # Update any per-frame uniforms here, e.g.:
     # program['time'].value = glfw.get_time()
-    program['resolution'].value = (width, height)
+    program["resolution"].value = (width, height)
+    program["cam_yaw"].value = yaw
+    program["cam_pitch"].value = pitch
+    program["cam_distance"].value = distance
+
     vao.render(moderngl.TRIANGLE_STRIP)
 
     glfw.swap_buffers(window)
