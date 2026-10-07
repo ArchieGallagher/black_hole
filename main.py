@@ -38,9 +38,8 @@ def scroll_cb(window, xoff, yoff):
 # This part is to help with making an FPS_calculator
 import time
 
-initial_time = time.perf_counter()
+current_time = time.perf_counter()
 frame = 0.0
-
 frames_per_second = 0.0
 
 # Window
@@ -110,11 +109,11 @@ while not glfw.window_should_close(window):
     glfw.poll_events()
 
     # This is part of the FPS_calculation
+    previous_time = current_time
     current_time = time.perf_counter()
-    time_elapsed = current_time - initial_time
-    if time_elapsed >= 1.0:
-        frames_per_second = frame / time_elapsed
-    frame += 1.0
+    frame_time = current_time - previous_time
+    frames_per_second = float(1.0 / frame_time)
+
     glfw.set_window_title(window, f"Black Hole - {frames_per_second:.3f}")
     ctx.clear(0.0, 0.0, 0.0)
 

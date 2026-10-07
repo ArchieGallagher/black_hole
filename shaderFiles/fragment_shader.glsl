@@ -5,6 +5,7 @@
 
 const float accretion_disk_max = 18.0;
 const float accretion_disk_min = 3.0;
+const float PI = 3.14159;
 
 in vec2 uv;
 out vec4 f_color;
@@ -14,12 +15,11 @@ uniform float cam_yaw;
 uniform float cam_pitch;
 uniform float cam_distance;
 
-
 void ray_march(in vec3 start_position, in vec3 start_direction, out vec4 colour);
 void rk4(inout vec3 ray_position, inout vec3 ray_direction, float dt, float h2);
-bool accretion_disk(in vec3 old_ray_position, in vec3 ray_position, out float distance_from_centre, out vec3 average_position, out float height_bound);
+bool accretion_disk(in vec3 ray_position, in vec3 old_ray_position, out float distance_from_centre);
 float getStepSize(float r);
-bool red_object(in vec3 ray_position, in vec3 old_ray_position);
+bool red_object(in vec3 ray_position);
 
 
 /*
@@ -63,7 +63,8 @@ void ray_march(in vec3 start_position, in vec3 start_direction, out vec4 colour)
   The dot product is being used to square the magnitude of the vector.
   The cross product is to produce a vector perpendicular to both inputs.
   */
-  float h2 = dot(cross(ray_position, ray_direction), cross(ray_position, ray_direction));
+  vec3 placeholder_for_cross = cross(ray_position, ray_direction);
+  float h2 = dot(placeholder_for_cross, placeholder_for_cross);
   float distance_from_centre;
   vec3 average_position;
   float height_bound;
@@ -81,7 +82,7 @@ void ray_march(in vec3 start_position, in vec3 start_direction, out vec4 colour)
       colour = vec4(0.0,0.0,0.0,1.0);
       break;
     }
-    else if (accretion_disk(old_ray_position, ray_position, distance_from_centre, average_position, height_bound) == true){
+    else if (accretion_disk(ray_position, old_ray_position, distance_from_centre)){
       vec3 near_colour = vec3(1.0, 0.9,0.6);
       vec3 far_colour = vec3(0.6, 0.1,0.0);
       
@@ -93,17 +94,15 @@ void ray_march(in vec3 start_position, in vec3 start_direction, out vec4 colour)
       break;
     }
 
-    else if (red_object(ray_position, old_ray_position) == true){
+    else if (red_object(ray_position)){
       colour = vec4(1.0, 0.0, 0.0, 1.0);
       break;
     }
 
     else if (i == (MAX_STEPS - 1)){
       colour = vec4(0.0, 0.0, 0.0, 0.99);// A dark grey just so the black hole stands out more.
-      break; //Not sure if i need this, as if its on the last step it should end after this anyways.
     }
   }
-  return;
 }
 
 float getStepSize(float r){
@@ -118,7 +117,6 @@ void acceleration_func(in vec3 ray_position, out vec3 ray_acceleration, float h2
 }
 
 void rk4(inout vec3 ray_position, inout vec3 ray_direction, float dt, float h2){ // This function is to increase the accuracy of the simulation.
-  float r = length(ray_position);
 
   //k1
   vec3 position_k1 = ray_direction;
@@ -153,11 +151,9 @@ void rk4(inout vec3 ray_position, inout vec3 ray_direction, float dt, float h2){
   ray_direction = normalize(ray_direction);
 }
 
-bool accretion_disk(in vec3 old_ray_position, in vec3 ray_position, out float distance_from_centre, out vec3 average_position, out float height_bound){
+bool accretion_disk(in vec3 ray_position, in vec3 old_ray_position, out float distance_from_centre){
   distance_from_centre = 0.0;
-  height_bound = 0.0;
-  average_position = (old_ray_position + ray_position) / 2.0;
-
+  float height_bound = 0.0;
 
   if (sign(ray_position.y) != sign(old_ray_position.y)){
     float m = -old_ray_position.y / (ray_position.y - old_ray_position.y);
@@ -168,10 +164,10 @@ bool accretion_disk(in vec3 old_ray_position, in vec3 ray_position, out float di
     }
   }
 
-  distance_from_centre = length(average_position.xz);
-  height_bound = 0.15 * pow((0.5 * (1.0 + cos((clamp((distance_from_centre - accretion_disk_min) / (accretion_disk_max - accretion_disk_min), 0.0, 1.0)) * 3.14159))), 2.0);
+  distance_from_centre = length(ray_position.xz);
+  height_bound = 0.15 * pow((0.5 * (1.0 + cos((clamp((distance_from_centre - accretion_disk_min) / (accretion_disk_max - accretion_disk_min), 0.0, 1.0)) * PI))), 2.0);
 
-  if (average_position.y >= (height_bound * (-1.0)) && average_position.y <= height_bound){
+  if (ray_position.y >= (height_bound * (-1.0)) && ray_position.y <= height_bound){
       if (distance_from_centre <= accretion_disk_max && distance_from_centre >= accretion_disk_min){
         return true;
     }
@@ -179,12 +175,10 @@ bool accretion_disk(in vec3 old_ray_position, in vec3 ray_position, out float di
   return false;
 }
 
-bool red_object(in vec3 ray_position, in vec3 old_ray_position){
-  vec3 sphere_location = vec3(0.0, 0.0, 35.0);
+bool red_object(in vec3 ray_position){
+  vec3 sphere_location = vec3(0.0, 0.0, 45.0);
   float sphere_radius = 5.0;
-  vec3 average_ray_position = (ray_position + old_ray_position) / 2.0;
-  float distance_to_sphere = length(average_ray_position - sphere_location);
-
+  float distance_to_sphere = length(ray_position - sphere_location);
   if (distance_to_sphere <= sphere_radius){
     return true;
   }
