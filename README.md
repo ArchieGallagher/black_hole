@@ -15,11 +15,12 @@
 
 <p align="center">
 
-img<src="https://img.shields.io/badge/Python-yellow?style=flat-square%22%20” alt=”Language1”>
+<img src="https://img.shields.io/badge/Python-yellow?style=flat-square%22%20” alt=”Language1”>
 
-img<src="https://img.shields.io/badge/GLSL-blue?style=flat-square%22%20” alt=”Language2”>
+<img src="https://img.shields.io/badge/GLSL-blue?style=flat-square” alt=”Language2”>
 
-  <img src="https://img.shields.io/badge/OpenGL-4.5-orange?style=flat-square" alt="Graphics API">
+  
+<img src="https://img.shields.io/badge/OpenGL-4.5-orange?style=flat-square" alt="Graphics API">
 
 </p>
 
