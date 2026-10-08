@@ -34,7 +34,7 @@
 - **Accretion Disk Rendering:** Temperature maps with gravitational redshift effects.
 - **Interactive Camera:** Smooth orbit camera.
 
-##Installation
+## Installation
 
 **Clone Repo**
 
