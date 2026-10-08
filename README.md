@@ -37,5 +37,7 @@
 ##Installation
 
 **Clone Repo**
+
 **pip install -r “libraries.txt”** - Use this command inside of a .venv
+
 **Main.py** - Run the file using python3
