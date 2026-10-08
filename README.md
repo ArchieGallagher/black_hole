@@ -22,6 +22,8 @@
   
 <img src="https://img.shields.io/badge/OpenGL-4.5-orange?style=flat-square" alt="Graphics API">
 
+<img src="https://img.shields.io/badge/OpenGL-4.5-orange?style=flat-square" alt="Graphics API">
+
 </p>
 
 
